@@ -6,7 +6,7 @@ import RightBar from './components/rightBar/RightBar';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
-import {BrowserRouter, Navigate, Outlet, Route, Routes} from "react-router-dom"; 
+import {createBrowserRouter, Navigate, Outlet,  RouterProvider} from "react-router-dom"; 
 
 function App() {
   const currentUser = true;
@@ -32,20 +32,38 @@ function App() {
       return children
   }
 
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        // {
+        //   path: "/profile/:id",
+        //   element: <Profile />,
+        // },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+  ]);
+
   return (
     <div >
-      <BrowserRouter>
-        <Routes>
-        <Route path='/' element={<ProtectedRoute>
-          <Layout/>
-        </ProtectedRoute>}/>
-        <Route path="/" element={<Home/>} />
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/register' element={<Register/>}/>
-        </Routes>
-      </BrowserRouter>
-        
-        
+        <RouterProvider router={router} />    
     </div>
   );
 }
