@@ -1,5 +1,6 @@
 
-import './App.css';
+// import './App.css';
+import "./style.scss";
 import LeftBar from './components/leftBar/LeftBar';
 import Navbar from './components/navbar/Navbar';
 import RightBar from './components/rightBar/RightBar';
@@ -12,7 +13,7 @@ function App() {
   const currentUser = true;
   const Layout = () =>{
     return(
-      <div>
+      <div className='theme-dark'>
         <Navbar/>
         <div style={{display: "flex"}}>
           <LeftBar/>
