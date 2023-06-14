@@ -10,9 +10,11 @@ import {HiOutlineMail} from "react-icons/hi";
 import {IoIosNotificationsOutline} from "react-icons/io";
 import {BiSun} from "react-icons/bi";
 import { DarkModeContext } from '../../context/darkModeContext';
+import { AuthContext } from '../../context/authContext';
 const Navbar = () => {
     
   const {toggle, darkMode} = useContext(DarkModeContext)
+  const {currentUser} = useContext(AuthContext)
   return (
     <div className='navbar'>
         <div className="left">
@@ -32,8 +34,8 @@ const Navbar = () => {
             <HiOutlineMail/>
             <IoIosNotificationsOutline/>
             <div className="user">
-                <img src="https://images.pexels.com/photos/1387037/pexels-photo-1387037.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" />
-                <span>Komal</span>
+                <img src={currentUser.profilePic} alt="" />
+                <span>{currentUser.name}</span>
             </div>
         </div>
     </div>
