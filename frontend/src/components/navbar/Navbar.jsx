@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import "./navbar.scss";
 import { Link } from 'react-router-dom'
 import {AiOutlineHome} from "react-icons/ai";
@@ -8,7 +8,10 @@ import {BiSearchAlt2} from "react-icons/bi";
 import {IoPersonOutline} from "react-icons/io5";
 import {HiOutlineMail} from "react-icons/hi";
 import {IoIosNotificationsOutline} from "react-icons/io";
+import { DarkModeContext } from '../../context/darkModeContext';
 const Navbar = () => {
+    
+  const {toggle} = useContext(DarkModeContext)
   return (
     <div className='navbar'>
         <div className="left">
@@ -16,7 +19,7 @@ const Navbar = () => {
             <span>GoSocial</span>
             </Link>
             <AiOutlineHome/>
-            <FiMoon/>
+            <FiMoon onClick={toggle}/>
             <BiGridAlt/>
             <div className="search">
                 <BiSearchAlt2/>
