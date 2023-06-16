@@ -11,6 +11,7 @@ import {createBrowserRouter, Navigate, Outlet,  RouterProvider} from "react-rout
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   const {currentUser} = useContext(AuthContext);
@@ -54,10 +55,10 @@ function App() {
           path: "/",
           element: <Home />,
         },
-        // {
-        //   path: "/profile/:id",
-        //   element: <Profile />,
-        // },
+        {
+          path: "/profile/:id",
+          element: <Profile/>,
+        },
       ],
     },
     {
