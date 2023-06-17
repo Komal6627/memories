@@ -7,7 +7,7 @@ import {
   BsLinkedin,
   BsPinterest,
 } from 'react-icons/bs';
-import { GrLocation } from 'react-icons/gr';
+import {IoLocation} from 'react-icons/io5';
 import { MdLanguage } from 'react-icons/md';
 import {HiOutlineMail} from 'react-icons/hi';
 import {FiMoreVertical} from 'react-icons/fi';
@@ -47,7 +47,7 @@ const Profile = () => {
             <span>Komal Killedar</span>
             <div className="info">
             <div className="item">
-              <GrLocation />
+              <IoLocation/>
               <span>Pune</span>
             </div>
             <div className="item">
