@@ -7,6 +7,7 @@ import {AiFillHeart} from "react-icons/ai";
 import {MdOutlineTextsms} from "react-icons/md";
 import {BiShareAlt} from "react-icons/bi";
 import Comments from '../comments/Comments';
+import moment from "moment"
 
 const Post = ({post}) => {
     const [commentOpen, setCommentOpen]= useState(false)
@@ -21,7 +22,7 @@ const Post = ({post}) => {
                 <div className="details">
                     <Link to={`/profile/${post.userId}`} style={{textDecoration: "none", color: "inherit"}}>
                         <span className='name'>{post.name}</span>
-                        <span className='date'>1 min ago</span>
+                        <span className='date'>{moment(post.createdAt).fromNow()}</span>
                     </Link>
                 </div>
             </div>
@@ -45,7 +46,7 @@ const Post = ({post}) => {
                 share
             </div>
         </div>
-        {commentOpen && <Comments/>}
+        {commentOpen && <Comments postId={post.id}/>}
         </div>
     </div>
   )
