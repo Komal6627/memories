@@ -3,6 +3,7 @@ import userRoutes from "./routes/users.js"
 import authRoutes from "./routes/auth.js"
 import postRoutes from "./routes/posts.js"
 import commentRoutes from "./routes/comments.js"
+import likeRoutes from "./routes/likes.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import multer from "multer";
@@ -47,6 +48,7 @@ app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
+app.use("/likes", likeRoutes);
 
 app.listen(3000, () => {
     console.log("Server Running");

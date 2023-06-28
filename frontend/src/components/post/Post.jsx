@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import "./post.scss";
 import {MdMoreHoriz} from "react-icons/md";
 import { Link } from 'react-router-dom';
@@ -8,11 +8,41 @@ import {MdOutlineTextsms} from "react-icons/md";
 import {BiShareAlt} from "react-icons/bi";
 import Comments from '../comments/Comments';
 import moment from "moment"
+import {  useQuery } from 'react-query';
+import { makeRequest } from '../../axios.js';
+import { AuthContext } from '../../context/authContext';
+import { QueryClient, useMutation } from 'react-query'
 
 const Post = ({post}) => {
-    const [commentOpen, setCommentOpen]= useState(false)
-    //Temporary
-    const liked = true;
+    const [commentOpen, setCommentOpen]= useState(false);
+
+    const {currentUser} = useContext(AuthContext)
+
+    const { isLoading, error, data } = useQuery(["likes", post.id], () =>
+    makeRequest.get("/likes?postId="+post.id).then((res) => {
+      return res.data;
+    })
+  );
+// console.log(data);
+
+const queryClient = new QueryClient()
+
+  const mutation = useMutation(
+    (liked) => {
+     if(liked) return makeRequest.delete('/likes?postId='+post.id);
+     return makeRequest.post("/likes", {postId: post.id})
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries('likes')
+      },
+    },
+  )
+
+const handleLike =() => {
+    mutation.mutate(data.includes(currentUser.id))
+}
   return (
     <div className='post'>
         <div className="container">
@@ -34,8 +64,19 @@ const Post = ({post}) => {
         </div>
         <div className="info">
             <div className="item">
-                {liked ?  <AiFillHeart/>: <AiOutlineHeart/>}
-                12 likes
+                {isLoading ? (
+              "loading"
+            ) : data.includes(currentUser.id) ? (
+                <AiFillHeart
+                  style={{ color: "red" }}
+                  onClick={handleLike}
+                />
+              ) : (
+              <AiOutlineHeart
+               onClick={handleLike}
+             />
+            )}
+            {data?.length} Likes
             </div>
             <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                 <MdOutlineTextsms/>
