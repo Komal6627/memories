@@ -42,12 +42,27 @@ const Profile = () => {
       })
   );
 
-  console.log(relationshipData);
-  // console.log(typeof userId)
+  // console.log(relationshipData);
+  // // console.log(typeof userId)
 
-  const handleFollow = () =>{
+  const queryClient = new QueryClient()
 
-  }
+  const mutation = useMutation(
+    (following) => {
+     if(following) return makeRequest.delete('/relationships?userId='+ userId);
+     return makeRequest.post("/relationships", {userId})
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(["relationship"])
+      },
+    },
+  )
+
+const handleFollow =() => {
+  mutation.mutate(relationshipData.includes(currentUser.id));
+}
 
   return (
     <div className="profile">
@@ -90,10 +105,12 @@ const Profile = () => {
                     <span>{data.website}</span>
                   </div>
                 </div>
-                {userId === currentUser.id ? (
+                {rIsLoading ? "loading" : userId === currentUser.id ? (
                   <button>update</button>
                 ) : (
-                  <button onClick={handleFollow}>follow</button>
+                  <button onClick={handleFollow}>{
+                    relationshipData.includes(currentUser.id) ? "Following" : "Follow"
+                  }</button>
                 )}
               </div>
               <div className="right">
@@ -101,7 +118,7 @@ const Profile = () => {
                 <FiMoreVertical />
               </div>
             </div>
-            <Posts />
+            <Posts userId={userId}/>
           </div>
         </>
       )}
