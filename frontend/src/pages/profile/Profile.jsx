@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './profile.scss'
 import {
   BsFacebook,
@@ -6,64 +6,105 @@ import {
   BsTwitter,
   BsLinkedin,
   BsPinterest,
-} from 'react-icons/bs';
-import {IoLocation} from 'react-icons/io5';
-import { MdLanguage } from 'react-icons/md';
-import {HiOutlineMail} from 'react-icons/hi';
-import {FiMoreVertical} from 'react-icons/fi';
-import Posts from '../../components/posts/Posts';
+} from 'react-icons/bs'
+import { IoLocation } from 'react-icons/io5'
+import { MdLanguage } from 'react-icons/md'
+import { HiOutlineMail } from 'react-icons/hi'
+import { FiMoreVertical } from 'react-icons/fi'
+import Posts from '../../components/posts/Posts'
+import { useQuery } from 'react-query'
+import { QueryClient, useMutation } from 'react-query'
+import { makeRequest } from '../../axios.js'
+import { useLocation } from 'react-router-dom'
+import { AuthContext } from '../../context/authContext'
 
 const Profile = () => {
+  const { currentUser } = useContext(AuthContext)
+  const userId = parseInt(useLocation().pathname.split('/')[2])
+
+  const { isLoading, error, data } = useQuery(['user'], () =>
+    makeRequest.get('/users/find/' + userId).then((res) => {
+      return res.data
+    }),
+  )
+
+  // const {data: relationshipData } = useQuery(['relationship'], () =>
+  // makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
+  //   return res.data;
+  //   }),
+  // )
+
+  const { isLoading: rIsLoading, data: relationshipData } = useQuery(
+    ["relationship"],
+    () =>
+      makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
+        return res.data;
+      })
+  );
+
+  console.log(relationshipData);
+  // console.log(typeof userId)
+
+  const handleFollow = () =>{
+
+  }
+
   return (
     <div className="profile">
-      <div className="images">
-        <img
-          src="https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&w=600"
-          alt=""
-          className="cover"
-        />
-        <img src="https://images.pexels.com/photos/675920/pexels-photo-675920.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" className="profilePic" />
-      </div>
-      <div className="profileContainer">
-        <div className="uInfo">
-          <div className="left">
-            <a href="http://facebook.com">
-              <BsFacebook fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <BsInstagram fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <BsTwitter fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <BsLinkedin fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <BsPinterest fontSize="large" />
-            </a>
+      {isLoading ? (
+        'loading'
+      ) : (
+        <>
+          <div className="images">
+            <img src={data.coverPic} alt="" className="cover" />
+            <img src={data.profilePic} alt="" className="profilePic" />
           </div>
-          <div className="center">
-            <span>Komal Killedar</span>
-            <div className="info">
-            <div className="item">
-              <IoLocation/>
-              <span>Pune</span>
+          <div className="profileContainer">
+            <div className="uInfo">
+              <div className="left">
+                <a href="http://facebook.com">
+                  <BsFacebook fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <BsInstagram fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <BsTwitter fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <BsLinkedin fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <BsPinterest fontSize="large" />
+                </a>
+              </div>
+              <div className="center">
+                <span>{data.name}</span>
+                <div className="info">
+                  <div className="item">
+                    <IoLocation />
+                    <span>{data.city}</span>
+                  </div>
+                  <div className="item">
+                    <MdLanguage />
+                    <span>{data.website}</span>
+                  </div>
+                </div>
+                {userId === currentUser.id ? (
+                  <button>update</button>
+                ) : (
+                  <button onClick={handleFollow}>follow</button>
+                )}
+              </div>
+              <div className="right">
+                <HiOutlineMail />
+                <FiMoreVertical />
+              </div>
             </div>
-            <div className="item">
-              <MdLanguage />
-              <span>go-social.dev</span>
-            </div>
-            </div>
-            <button>follow</button>
+            <Posts />
           </div>
-          <div className="right">
-            <HiOutlineMail/>
-            <FiMoreVertical/>
-          </div>
-        </div>
-      <Posts/>
-      </div>
+        </>
+      )}
     </div>
   )
 }
