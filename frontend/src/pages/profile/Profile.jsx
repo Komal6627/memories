@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import './profile.scss'
 import {
   BsFacebook,
@@ -17,8 +17,10 @@ import { QueryClient, useMutation } from 'react-query'
 import { makeRequest } from '../../axios.js'
 import { useLocation } from 'react-router-dom'
 import { AuthContext } from '../../context/authContext'
+import Update from '../../components/update/Update'
 
 const Profile = () => {
+  const [openUpdate, setOpenUpdate] = useState(false)
   const { currentUser } = useContext(AuthContext)
   const userId = parseInt(useLocation().pathname.split('/')[2])
 
@@ -27,12 +29,8 @@ const Profile = () => {
       return res.data
     }),
   )
-
-  // const {data: relationshipData } = useQuery(['relationship'], () =>
-  // makeRequest.get("/relationships?followedUserId=" + userId).then((res) => {
-  //   return res.data;
-  //   }),
-  // )
+    console.log(data);
+ 
 
   const { isLoading: rIsLoading, data: relationshipData } = useQuery(
     ["relationship"],
@@ -42,7 +40,7 @@ const Profile = () => {
       })
   );
 
-  // console.log(relationshipData);
+   console.log(relationshipData);
   // // console.log(typeof userId)
 
   const queryClient = new QueryClient()
@@ -71,8 +69,8 @@ const handleFollow =() => {
       ) : (
         <>
           <div className="images">
-            <img src={data.coverPic} alt="" className="cover" />
-            <img src={data.profilePic} alt="" className="profilePic" />
+            <img src={"/upload/"+data.coverPic} alt="" className="cover" />
+            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" />
           </div>
           <div className="profileContainer">
             <div className="uInfo">
@@ -106,7 +104,7 @@ const handleFollow =() => {
                   </div>
                 </div>
                 {rIsLoading ? "loading" : userId === currentUser.id ? (
-                  <button>update</button>
+                  <button onClick={() =>setOpenUpdate(true) }>update</button>
                 ) : (
                   <button onClick={handleFollow}>{
                     relationshipData.includes(currentUser.id) ? "Following" : "Follow"
@@ -122,6 +120,7 @@ const handleFollow =() => {
           </div>
         </>
       )}
+        {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
     </div>
   )
 }

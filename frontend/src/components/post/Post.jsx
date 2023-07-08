@@ -23,7 +23,7 @@ const Post = ({post}) => {
       return res.data;
     })
   );
-// console.log(data);
+ console.log(data);
 
 const queryClient = new QueryClient()
 
